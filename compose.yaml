@@ -34,7 +34,25 @@ services:
       - ./postgres:/var/lib/postgresql/data
     networks:
       - gitea
-      
+  # Use it after initializing gitea and getting the Token
+  runner:
+    image: gitea/act_runner:0.2.10
+    restart: unless-stopped
+    environment:
+      CONFIG_FILE: /config.yaml
+      GITEA_INSTANCE_URL: "http://gitea:3000/"
+      GITEA_RUNNER_REGISTRATION_TOKEN: "6DMmpq4ktUY5kVFJEjlDK1wsAh1kOFCdR560VTpv"
+      # GITEA_RUNNER_NAME: "${RUNNER_NAME}"
+      # GITEA_RUNNER_LABELS: "${RUNNER_LABELS}"
+    volumes:
+      - ./config.yaml:/config.yaml
+      - ./runner:/data
+      - /var/run/docker.sock:/var/run/docker.sock
+    depends_on:
+      - server
+    networks:
+      - gitea
+
 networks:
   gitea:
     external: false
